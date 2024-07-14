@@ -1,23 +1,18 @@
-import { db } from '../config/db.connection.js' 
-import { GetGamesService, PostGamesService } from '../services/jogos-service.js';
+import { invalid_number, same_GameName } from '../errors/errors.js';
+import { GetGameByName, GetGamesService, PostGamesService } from '../services/jogos-service.js';
 
-export async function GetGames (req, res) {
-    try {
+export async function GetGamesController (req, res) {
         const ListGames = await GetGamesService();
         res.send(ListGames)
-      } catch (err) {
-        res.status(404).send(err)
-    }
 }
 
-export async function PostGames (req, res) {
+export async function PostGamesController (req, res) {
+        const checkName = await GetGameByName(req.body);
+        if (checkName.length > 0) throw same_GameName();
 
-    try {
-        const resultado = await PostGamesService(req.body) 
+        if (req.body.stockTotal || req.body.pricePerDay < 0) throw invalid_number();
 
+        const resultado = await PostGamesService(req.body);
         res.status(201).send(resultado)
-    } catch (err) {
-        res.status(402).send(err.message);
-    }
 }
 

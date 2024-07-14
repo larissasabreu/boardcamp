@@ -5,8 +5,8 @@ import Joi from 'joi'
 //     phone: '21998899222',
 //     cpf: '01234567890'
 
-export const InsertClientSchema = Joi.object({
+export const InsertCustomerSchema = Joi.object({
      name: Joi.string().required(),
-     phone: Joi.number().min(10).max(11).required(),
+     phone: Joi.number().required(),
      cpf: Joi.string().min(11).required()
     });

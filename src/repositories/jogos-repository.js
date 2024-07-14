@@ -11,3 +11,8 @@ export async function PostGamesRepository ({name, image, stockTotal, pricePerDay
 
         return InsertGames
 }
+
+export async function GetGameByNameRepository({name}) {
+    const ListGames = await db.query(`SELECT * FROM games WHERE name = $1`, [name])
+    return ListGames.rows;
+}

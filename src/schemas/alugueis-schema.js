@@ -9,3 +9,4 @@ export const InsertRentSchema = Joi.object({
     gameId: Joi.number().required(),
     daysRented: Joi.number().required()
    });
+
