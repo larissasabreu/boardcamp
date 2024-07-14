@@ -28,6 +28,20 @@ export function same_CPF() {
     }
 }
 
+export function invalid_phone() {
+    return {
+        type: "invalid_phone",
+        message: "o número de telefone precisa ter 10 a 11 caracteres numéricos"
+    }
+}
+
+export function invalid_cpf() {
+    return {
+        type: "invalid_cpf",
+        message: "o cpf deve ter 11 caracteres numéricos"
+    }
+}
+
 // rentals
 
 export function invalid_GameId() {

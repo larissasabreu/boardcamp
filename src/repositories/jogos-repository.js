@@ -6,10 +6,8 @@ export async function GetGamesRepository () {
 }
 
 export async function PostGamesRepository ({name, image, stockTotal, pricePerDay}) {
-    
-        const InsertGames = await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay") VALUES ($1, $2, $3, $4)`, [name, image, stockTotal, pricePerDay]);
-
-        return InsertGames
+    const InsertGames = await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay") VALUES ($1, $2, $3, $4)`, [name, image, stockTotal, pricePerDay]);
+    return InsertGames
 }
 
 export async function GetGameByNameRepository({name}) {
