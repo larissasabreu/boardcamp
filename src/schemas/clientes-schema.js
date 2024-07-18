@@ -8,5 +8,5 @@ import Joi from 'joi'
 export const InsertCustomerSchema = Joi.object({
      name: Joi.string().required(),
      phone: Joi.number().required(),
-     cpf: Joi.string().min(11).required()
+     cpf: Joi.string().min(11).max(11).required()
     });

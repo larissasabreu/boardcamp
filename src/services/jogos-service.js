@@ -1,4 +1,4 @@
-import { GetGameByNameRepository, GetGamesRepository, PostGamesRepository } from '../repositories/jogos-repository.js';
+import { GetGameByIdRepository, GetGameByNameRepository, GetGamesRepository, PostGamesRepository } from '../repositories/jogos-repository.js';
 
 export async function GetGamesService (req, res) {
     const ListGames = await GetGamesRepository();
@@ -12,6 +12,10 @@ export async function GetGameByName (req, res) {
 
 export async function PostGamesService (req, res) {
     const InsertGames = await PostGamesRepository(req);
-    return InsertGames
+    return InsertGames;
 }
 
+export async function GetGamesByIdService (req) {
+    const GetGames = await GetGameByIdRepository(req);
+    return GetGames;
+}

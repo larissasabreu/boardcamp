@@ -58,3 +58,23 @@ export function invalid_CustomerId() {
     }
 }
 
+export function invalid_RentId() {
+    return {
+        type: "invalid_RentId",
+        message: "o id do aluguel não existe"    
+    }
+}
+
+export function invalid_rental() {
+    return {
+        type: "invalid_rental",
+        message: "o aluguel ainda não está finalizado"
+    }
+}
+
+export function invalid_rentalEnd() {
+    return {
+        type: "invalid_rentalEnd",
+        message: "o aluguel já foi finalizado"
+    }
+}
