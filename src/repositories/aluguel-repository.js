@@ -15,29 +15,74 @@ const diaHoje = `'${dia}'`
 //   }
 
 export async function GetRentRepository () {
-    const ListRentals = await db.query("SELECT rentals.*, games.* AS game, customers.* AS customer FROM rentals JOIN games ON games.id = rentals.id JOIN customers ON customers.id = rentals.id");
-    return ListRentals
+    const resultado = await db.query("SELECT rentals.*, games.name AS game, games.id as gameId, customers.id AS customerId, customers.name as customersName FROM rentals JOIN games ON games.id = rentals.id JOIN customers ON customers.id = rentals.id ORDER BY rentals.id");
+    
+    const formatar = []
+    let rentalsFormatados
+
+    for (let i = 0; i < resultado.rows.length; i++) {
+    const rental = resultado.rows[i]
+    const ProxRental = resultado.rows[i + 1]
+
+    if (rentalsFormatados && rentalsFormatados.id == rental.id) {
+    rentalsFormatados.customer.push(rental.customerId, rental.customersname)
+    rentalsFormatados.Formatados.game.push(rental.gameId, rental.game)
+    } else {
+        rentalsFormatados = {...rental, customer : [{id: rental.customerId, name: rental.customersname}], 
+        game : [{id: rental.gameId, name: rental.game}]}
+        delete rentalsFormatados.customerid
+        delete rentalsFormatados.customersname
+        delete rentalsFormatados.gameid
+
+    }
+    if (!ProxRental || ProxRental.id !== rental.id) {
+    formatar.push(rentalsFormatados)
+    }
+
+    }
+    return formatar
+
 }
 
-// ?????????????  ????????
 export async function PostRentRepository ({customerId, gameId, daysRented}) {
-    // const GetOGPrice = await db.query('SELECT "pricePerDay" FROM games WHERE id = $1', [gameId])
-    // const originalPrice = (GetOGPrice.rows) * daysRented;
+    const GetPricePerDay = await db.query('SELECT "pricePerDay" FROM games WHERE id = $1', [gameId])
+    const PricePerDay = GetPricePerDay.rows[0].pricePerDay
+    const originalPrice = (PricePerDay) * daysRented
 
-    const InsertRental = await db.query('INSERT INTO rentals ("customerId","gameId","rentDate","daysRented","returnDate","originalPrice","delayFee") VALUES ($1, $2, $3, $4, $5, $6, $7)', [customerId, gameId, diaHoje, daysRented, null, 2, null]);
+    console.log(PricePerDay)
+    console.log(originalPrice)
+
+    const delayFee = null
+    const returnDate = null
+
+    const InsertRental = await db.query(`INSERT INTO rentals ("customerId","gameId","rentDate","daysRented","returnDate","originalPrice","delayFee") VALUES ($1, $2, $3, $4, $5, $6, $7)`, [customerId, gameId, diaHoje, daysRented, returnDate, originalPrice, delayFee]);
     return InsertRental
 }
 
 // ??????????????????????????
 export async function EndRentRepository (id) {
-    // const GetGameId = await db.query(`SELECT "gameId" FROM rentals WHERE id = $1`, [id])
-    // const GetPricePerDay = await db.query(`SELECT "pricePerDay" FROM games WHERE id = $1`, [GetGameId.rows])
-    // const GetRentDay = await db.query(`SELECT "rentDate" FROM rentals WHERE id = $1`, [id])
-    // const RentDate = dayjs(GetRentDay.rows)
-    // const daysDiff = (dia.diff(RentDate, 'day'))
-    // const delayFee = daysDiff * (GetPricePerDay.rows)
+    const GetGameId = await db.query(`SELECT "gameId" FROM rentals WHERE id = $1`, [id])
+    const GetPricePerDay = await db.query(`SELECT "pricePerDay" FROM games WHERE id = $1`, [GetGameId.rows[0].gameId])
+    const pricePerDay = GetPricePerDay.rows[0].pricePerDay
+    const GetRentDay = await db.query(`SELECT "rentDate" FROM rentals WHERE id = $1`, [id])
     
-    const EndRental = await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3`, [diaHoje, 10, id])
+    const rentDay = GetRentDay.rows[0].rentDate
+
+    const dayss = dayjs()
+    let hours = dayss.diff(Date.parse(rentDay), 'hours');
+    const days = Math.floor(hours / 24);
+    hours = hours - (days * 24);
+    
+    // console.log('Days: ', days);
+    // console.log('Hours: ', hours);
+    // // console.log(pricePerDay)
+    // console.log(GetPricePerDay.rows[0].pricePerDay)
+    // console.log(dia)
+    // console.log(rentDay)
+
+    const delayFee = pricePerDay * days
+
+    const EndRental = await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3`, [diaHoje, delayFee, id])
 
     return EndRental
 }
@@ -49,5 +94,5 @@ export async function DeleteRentRepository (id) {
 
 export async function GetRentByIdRepository(id) {
     const GetById = await db.query("SELECT * FROM rentals WHERE id = $1", [id])
-    return GetById.rows
+    return GetById.rows[0]
 }

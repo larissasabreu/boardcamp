@@ -23,8 +23,12 @@ export default function errorHandler(error, req, res, next) {
         return res.status(404).send(error.message);
     }
 
-    if (error.type === "invalid_Rental" || "invalid_rentalEnd") {
+    if (error.type === "invalid_Rental") {
         return res.status(400).send(error.message);
+    }
+
+    if (error.type === "invalid_rentalEnd") {
+        return res.status(422).send(error.message);
     }
 
 }  

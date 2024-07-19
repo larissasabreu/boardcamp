@@ -4,8 +4,9 @@ import { GetCustomersByIdService } from "../services/clientes-service.js";
 import { GetGamesByIdService } from "../services/jogos-service.js";
 
 export async function GetRentController (req, res) {
-        const ListRent = await GetRentService();
-        res.send(ListRent)
+
+        const resultado = await GetRentService();
+        res.status(200).send(resultado)
 }
 
 export async function PostRentController (req, res) {
@@ -16,7 +17,6 @@ export async function PostRentController (req, res) {
         if (CheckGameId.length == 0) throw invalid_GameId();
 
         const resultado = await PostRentService(req.body)
-        console.log(req.body)
 
         res.status(201).send(resultado)
 }
@@ -24,11 +24,13 @@ export async function PostRentController (req, res) {
 export async function EndRentController (req, res) {
         const id = req.params.id;
 
-        const EndRent = await EndRentalService(id);
+        const GetRent = await GetRentById(id)
         
-        if (EndRent.returnDate !== null) throw invalid_rentalEnd();
+        if (GetRent.length == 0) throw invalid_RentId();
+        // if (GetRent.returnDate !== null) throw invalid_rentalEnd();
 
-        res.status(200);
+        const EndRent = await EndRentalService(id);
+        res.status(200).send(EndRent);
 }
 
 export async function DeleteRentController (req, res) {
@@ -36,10 +38,9 @@ export async function DeleteRentController (req, res) {
 
         const GetRent = await GetRentById(id);
         if (GetRent.length == 0) throw invalid_RentId();
-        if (GetRent.returnDate == null) throw invalid_rental();
-        console.log(GetRent.returnDate)
+        // if (GetRent.returnDate == null) throw invalid_rental();
 
         const DeleteRental = await DeleteRentService(id);
 
-        res.sendStatus(200);
+        res.status(200).send(DeleteRental);
 }

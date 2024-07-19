@@ -2,7 +2,7 @@ import { DeleteRentRepository, EndRentRepository, GetRentByIdRepository, GetRent
 
 export async function GetRentService (req, res) {
     const ListRent = await GetRentRepository();
-    return ListRent.rows
+    return ListRent
 }
 
 export async function PostRentService (req) {

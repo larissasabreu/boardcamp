@@ -15,7 +15,7 @@ export async function GetGameByNameRepository({name}) {
     return ListGames.rows;
 }
 
-export async function GetGameByIdRepository({id}) {
-    const ListGames = await db.query(`SELECT * FROM games WHERE id = $1`, [id])
+export async function GetGameByIdRepository({gameId}) {
+    const ListGames = await db.query(`SELECT * FROM games WHERE id = $1`, [gameId])
     return ListGames.rows;
 }

@@ -15,7 +15,7 @@ export async function GetCustomersByCPFRepository({cpf}) {
     return ListCustomers.rows;
 }
 
-export async function GetCustomersByIdRepository(id) {
-    const ListCustomers = await db.query(`SELECT * FROM customers WHERE id = $1`, [id])
+export async function GetCustomersByIdRepository({customerId}) {
+    const ListCustomers = await db.query(`SELECT * FROM customers WHERE id = $1`, [customerId])
     return ListCustomers.rows;
 }

@@ -8,6 +8,7 @@ export async function GetCustomersController (req, res) {
 
 export async function PostCustomersController (req, res) {
         const checkCPF = await GetCustomersByCPFService(req.body);
+        
         if (checkCPF.length > 0) throw same_CPF();
         
         const resultado = await PostCustomersService(req.body);
